@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'kana.dart';
+import 'quiz_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -72,7 +73,13 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton.extended(
         icon: Icon(Icons.check),
         label: Text("Start Quiz"),
-        onPressed: () => print('Quiz'),
+        onPressed: () {
+          Navigator.of(context).push(
+            new MaterialPageRoute<void>(
+              builder: (BuildContext context) => QuizPage(),
+            ),
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
