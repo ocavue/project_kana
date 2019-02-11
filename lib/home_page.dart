@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'kana.dart';
 import 'quiz_page.dart';
+import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -65,7 +66,13 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.settings),
             tooltip: 'Setting',
-            onPressed: () => print('Setting'),
+            onPressed: () {
+              Navigator.of(context).push(
+                new MaterialPageRoute<void>(
+                  builder: (BuildContext context) => SettingsPage(),
+                ),
+              );
+            },
           ),
         ],
       ),
