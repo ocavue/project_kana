@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'kana.dart';
+import 'quiz.dart';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -8,18 +9,68 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  int correctIndex = 0;
-  int choicedIndex;
-  Kana targetKana;
-  List<Kana> choicedKanas;
-  List<String> choicedChars;
+  int quizLength;
+  List<Quiz> quizs;
+
+  void _removeQuiz() {
+    setState(() {
+      quizs.removeAt(0);
+    });
+  }
+
+  _QuizPageState() {
+    quizs = [
+      MultipleChoicesQuiz(
+        question: kanas[0].katakana,
+        correctChoice: 0,
+        choices: [
+          kanas[0].hiragana,
+          kanas[1].hiragana,
+          kanas[2].hiragana,
+          kanas[3].hiragana,
+        ],
+        onSubmit: _removeQuiz,
+      ),
+      MultipleChoicesQuiz(
+        question: kanas[4].katakana,
+        correctChoice: 3,
+        choices: [
+          kanas[7].hiragana,
+          kanas[6].hiragana,
+          kanas[5].hiragana,
+          kanas[4].hiragana,
+        ],
+        onSubmit: _removeQuiz,
+      ),
+      MultipleChoicesQuiz(
+        question: kanas[6].katakana,
+        correctChoice: 1,
+        choices: [
+          kanas[5].hiragana,
+          kanas[6].hiragana,
+          kanas[4].hiragana,
+          kanas[7].hiragana,
+        ],
+        onSubmit: _removeQuiz,
+      ),
+      MultipleChoicesQuiz(
+        question: kanas[7].katakana,
+        correctChoice: 0,
+        choices: [
+          kanas[7].hiragana,
+          kanas[8].hiragana,
+          kanas[9].hiragana,
+          kanas[10].hiragana,
+        ],
+        onSubmit: () => {},
+      ),
+    ];
+
+    quizLength = quizs.length;
+  }
 
   @override
   Widget build(BuildContext context) {
-    targetKana = kanas[0];
-    choicedKanas = <Kana>[kanas[0], kanas[1], kanas[2], kanas[3]];
-    choicedChars = choicedKanas.map((Kana kana) => kana.hiragana).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz'),
@@ -29,75 +80,14 @@ class _QuizPageState extends State<QuizPage> {
         child: Column(
           children: [
             Container(
-              child: Text('1 / 10'),
+              child: Text('${quizLength - quizs.length + 1} / $quizLength'),
             ),
             Expanded(
-              child: Card(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          targetKana.katakana,
-                          style: TextStyle(fontSize: 64.0),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: _buildChoices(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+              child: Stack(children: quizs.reversed.toList()),
+            )
           ],
         ),
       ),
-    );
-  }
-
-  List<Widget> _buildChoices() {
-    return List<Widget>.generate(
-      choicedChars.length,
-      (int index) {
-        return Container(
-          padding: EdgeInsets.only(top: 16.0),
-          child: ChoiceChip(
-            label: Text(
-              choicedChars[index],
-              style: TextStyle(
-                fontSize: 32,
-                color: Theme.of(context).textTheme.title.color,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 64.0),
-            pressElevation: 0.0,
-            selectedColor:
-                correctIndex == index ? Colors.green[200] : Colors.red[200],
-            selected: choicedIndex == index,
-            onSelected: (bool selected) {
-              setState(() {
-                if (selected) {
-                  choicedIndex = index;
-                  submitAnswer();
-                }
-              });
-            },
-          ),
-        );
-      },
-    ).toList();
-  }
-
-  void submitAnswer() {
-    print(
-      'submit index $choicedIndex (${correctIndex == choicedIndex ? "correct" : "incorrect"})',
     );
   }
 }
