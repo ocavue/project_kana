@@ -1,0 +1,20 @@
+jobs:
+  build-apk:
+    docker:
+      - image: cirrusci/flutter
+    steps:
+      - checkout
+      - run: whoami && pwd
+      - run: yes | sdkmanager --licenses || if [ $? -ne '141' ]; then exit $?; fi;  # https://discuss.circleci.com/t/build-fails-on-acceptance-of-license-agreements/27828/6
+      - run: flutter doctor
+      - run: flutter analyze
+      - run: flutter -v build apk
+      - run: branch=$(git rev-parse --abbrev-ref HEAD) &&
+             commitid=$(git rev-parse HEAD | cut -c 1-10) &&
+             curl --upload-file /home/cirrus/project/build/app/outputs/apk/release/app-release.apk https://transfer.sh/project_kan_${branch}_${commitid}.apk
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-apk
