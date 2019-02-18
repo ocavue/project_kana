@@ -8,14 +8,57 @@ class QuizPage extends StatefulWidget {
   _QuizPageState createState() => new _QuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
+class _QuizPageState extends State<QuizPage>
+    with SingleTickerProviderStateMixin {
   int quizLength;
   List<Quiz> quizs;
 
-  void _removeQuiz() {
-    setState(() {
-      quizs.removeAt(0);
+  AnimationController controller;
+  Animation<double> animation;
+  double screenWidth;
+
+  @override
+  initState() {
+    super.initState();
+    // Because this class has now mixed in a TickerProvider
+    // It can be its own vsync. This is what you need almost always
+    controller = new AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+
+    animation = new Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.fastOutSlowIn,
+    ));
+
+    // It will call the callback passed to it everytime the
+    // value of the tween changes. Call setState within it
+    // to repaint the widget with the new valueƒ
+    animation.addListener(() {
+      setState(() {});
     });
+  }
+
+  void _removeQuiz() {
+    // Wait for a while, so that user can ee if the answer is correct
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      // Tell the animation to start
+      controller.forward().whenComplete(() {
+        controller.reset();
+        quizs.removeAt(0);
+      });
+    });
+  }
+
+  Offset _getOffset(Quiz quiz) {
+    if (quizs.indexOf(quiz) == 0) {
+      return Offset(-1 * screenWidth * animation.value, 0.0);
+    }
+    return Offset(0.0, 0.0);
   }
 
   _QuizPageState() {
@@ -62,7 +105,7 @@ class _QuizPageState extends State<QuizPage> {
           kanas[9].hiragana,
           kanas[10].hiragana,
         ],
-        onSubmit: () => {},
+        onSubmit: _removeQuiz,
       ),
     ];
 
@@ -71,6 +114,8 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz'),
@@ -83,7 +128,16 @@ class _QuizPageState extends State<QuizPage> {
               child: Text('${quizLength - quizs.length + 1} / $quizLength'),
             ),
             Expanded(
-              child: Stack(children: quizs.reversed.toList()),
+              child: Stack(
+                children: quizs.reversed.map(
+                  (quiz) {
+                    return Transform.translate(
+                      offset: _getOffset(quiz),
+                      child: quiz,
+                    );
+                  },
+                ).toList(),
+              ),
             )
           ],
         ),
