@@ -1,6 +1,48 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+class MyChip extends StatefulWidget {
+  final Widget child;
+  final Color color;
+  final Color selectedColor;
+  final VoidCallback onSelected;
+  final bool selected;
+  final ShapeBorder shape;
+
+  MyChipState createState() => new MyChipState();
+
+  MyChip({
+    Key key,
+    @required this.child,
+    @required this.color,
+    @required this.selectedColor,
+    @required this.onSelected,
+    @required this.selected,
+    @required this.shape,
+  }) : super(key: key);
+}
+
+class MyChipState extends State<MyChip> {
+  Widget build(BuildContext context) {
+    final color = widget.selected ? widget.selectedColor : widget.color;
+
+    return Ink(
+      decoration: ShapeDecoration(
+        shape: widget.shape,
+        color: color,
+      ),
+      child: InkWell(
+        customBorder: widget.shape,
+        onTap: widget.onSelected,
+        child: Container(
+          child: Center(child: widget.child),
+          height: 48.0,
+        ),
+      ),
+    );
+  }
+}
+
 abstract class Quiz extends StatefulWidget {
   Quiz({Key key}) : super(key: key);
 }
@@ -32,31 +74,29 @@ class MultipleChoicesQuizState extends State<MultipleChoicesQuiz> {
       widget.choices.length,
       (int index) {
         final bool isCorrectChoice = widget.correctChoice == index;
+        final Color selectedColor =
+            isCorrectChoice ? Colors.green[200] : Colors.red[200];
 
         return Container(
-          padding: EdgeInsets.only(top: 16.0),
-          child: ChoiceChip(
-            label: Text(
+          margin: EdgeInsets.only(bottom: 16.0, right: 16.0, left: 16.0),
+          width: 256,
+          child: MyChip(
+            shape: StadiumBorder(),
+            child: Text(
               widget.choices[index],
-              style: TextStyle(
-                fontSize: 32,
-                color: Theme.of(context).textTheme.title.color,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 64.0),
-            pressElevation: 0.0,
-            selectedColor: isCorrectChoice ? Colors.green[200] : Colors.red[200],
+            color: Colors.grey[300],
+            selectedColor: selectedColor,
             selected: selectIndex == index,
-            onSelected: (bool selected) {
+            onSelected: () {
+              if (selectIndex > -1) return;
               setState(() {
-                if (selected) {
-                  selectIndex = index;
-                  print(
-                    'select ${widget.choices[index]}, ${isCorrectChoice ? 'correct' : 'incorrect'}',
-                  );
-                  widget.onSubmit();
-                  print('called');
-                }
+                selectIndex = index;
+                print(
+                  'select ${widget.choices[index]}, ${isCorrectChoice ? 'correct' : 'incorrect'}',
+                );
+                widget.onSubmit();
               });
             },
           ),
@@ -68,7 +108,7 @@ class MultipleChoicesQuizState extends State<MultipleChoicesQuiz> {
   Widget build(BuildContext context) {
     return Card(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Row(
@@ -83,7 +123,7 @@ class MultipleChoicesQuizState extends State<MultipleChoicesQuiz> {
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: _buildChoices(context),
           ),
         ],
