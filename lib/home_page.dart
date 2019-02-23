@@ -4,6 +4,8 @@ import 'kana.dart';
 import 'quiz_page.dart';
 import 'settings_page.dart';
 
+const gridSpacing = 1.0;
+
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
 
@@ -18,39 +20,48 @@ class _HomePageState extends State<HomePage> {
     List<Widget> gridCells = [];
 
     for (final kana in kanas) {
-      final cell = InkWell(
-        child: Container(
-          child: Column(
-            children: [
-              Text(
-                kana.hiragana,
-                style: TextStyle(fontSize: 24.0),
-              ),
-              Row(
-                children: [
-                  Text(kana.katakana),
-                  Text(kana.romaji),
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+      final cell = Container(
+        child: Ink(
+          decoration: new BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey[400],
+                blurRadius: 0.0,
+                spreadRadius: gridSpacing,
               )
             ],
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            color: Theme.of(context).scaffoldBackgroundColor,
           ),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black12, width: 0.5),
+          child: InkWell(
+            child: Column(
+              children: [
+                Text(
+                  kana.hiragana,
+                  style: TextStyle(fontSize: 24.0),
+                ),
+                Row(
+                  children: [
+                    Text(kana.katakana),
+                    Text(kana.romaji),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                )
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            ),
+            onTap: () {
+              print(kana);
+            },
           ),
         ),
-        onTap: () {
-          print(kana);
-        },
       );
       gridCells.add(cell);
     }
 
     return GridView.count(
       primary: false,
-      crossAxisSpacing: 0,
-      mainAxisSpacing: 0,
+      crossAxisSpacing: gridSpacing,
+      mainAxisSpacing: gridSpacing,
       crossAxisCount: 5,
       children: gridCells,
       padding: EdgeInsets.only(bottom: 64), // Add padding for FAB
