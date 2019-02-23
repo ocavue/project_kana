@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'kana.dart';
@@ -125,7 +127,9 @@ class _QuizPageState extends State<QuizPage>
         child: Column(
           children: [
             Container(
-              child: Text('${quizLength - quizs.length + 1} / $quizLength'),
+              child: Text(
+                '${min(quizLength - quizs.length + 1, quizLength)} / $quizLength',
+              ),
             ),
             Expanded(
               child: Stack(
