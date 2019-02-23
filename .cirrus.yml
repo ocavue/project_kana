@@ -8,6 +8,13 @@ test_task:
     - flutter analyze
     - flutter test
 
+check_style_task:
+  container:
+    image: cirrusci/flutter:latest
+  script:
+    - flutter doctor
+    - flutter format --set-exit-if-changed --dry-run .
+
 build_apk_task:
   container:
     image: cirrusci/flutter:latest
