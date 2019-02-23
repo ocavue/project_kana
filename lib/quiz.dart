@@ -48,64 +48,63 @@ abstract class Quiz extends StatefulWidget {
 }
 
 class MultipleChoicesQuiz extends Quiz {
-  final List<String> choices;
   final String question;
-  final int correctChoice;
+  final String correctChoice;
+  final List<String> wrongChoices;
   final VoidCallback onSubmit;
 
   MultipleChoicesQuiz({
     Key key,
-    @required this.choices,
     @required this.question,
     @required this.correctChoice,
+    @required this.wrongChoices,
     @required this.onSubmit,
-  })  : assert(correctChoice < choices.length),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   MultipleChoicesQuizState createState() => new MultipleChoicesQuizState();
 }
 
 class MultipleChoicesQuizState extends State<MultipleChoicesQuiz> {
-  int selectIndex = -1;
+  List<String> shuffleChoices = [];
+  String selectedChoice;
 
-  List<Widget> _buildChoices(BuildContext context) {
-    return List<Widget>.generate(
-      widget.choices.length,
-      (int index) {
-        final bool isCorrectChoice = widget.correctChoice == index;
-        final Color selectedColor =
-            isCorrectChoice ? Colors.green[200] : Colors.red[200];
-
-        return Container(
-          margin: EdgeInsets.only(bottom: 16.0, right: 16.0, left: 16.0),
-          width: 256,
-          child: MyChip(
-            shape: StadiumBorder(),
-            child: Text(
-              widget.choices[index],
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            color: Colors.grey[300],
-            selectedColor: selectedColor,
-            selected: selectIndex == index,
-            onSelected: () {
-              if (selectIndex > -1) return;
-              setState(() {
-                selectIndex = index;
-                print(
-                  'select ${widget.choices[index]}, ${isCorrectChoice ? 'correct' : 'incorrect'}',
-                );
-                widget.onSubmit();
-              });
-            },
-          ),
-        );
-      },
-    ).toList();
+  Widget _buildChoice(String choice) {
+    final bool isCorrect = widget.correctChoice == choice;
+    final Color selectedColor = isCorrect ? Colors.green[200] : Colors.red[200];
+    return Container(
+      margin: EdgeInsets.only(bottom: 16.0, right: 16.0, left: 16.0),
+      width: 256,
+      child: MyChip(
+        shape: StadiumBorder(),
+        child: Text(
+          choice,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        color: Colors.grey[300],
+        selectedColor: selectedColor,
+        selected: selectedChoice == choice,
+        onSelected: () {
+          if (selectedChoice != null) return;
+          setState(() {
+            selectedChoice = choice;
+            print(
+              'select $choice, ${isCorrect ? 'correct' : 'incorrect'}',
+            );
+            widget.onSubmit();
+          });
+        },
+      ),
+    );
   }
 
   Widget build(BuildContext context) {
+    if (shuffleChoices.length == 0) {
+      shuffleChoices.add(widget.correctChoice);
+      shuffleChoices.addAll(widget.wrongChoices);
+      shuffleChoices.shuffle();
+    }
+
     return Card(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -124,7 +123,7 @@ class MultipleChoicesQuizState extends State<MultipleChoicesQuiz> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: _buildChoices(context),
+            children: shuffleChoices.map(_buildChoice).toList(),
           ),
         ],
       ),

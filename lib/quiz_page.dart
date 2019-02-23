@@ -67,9 +67,8 @@ class _QuizPageState extends State<QuizPage>
     quizs = [
       MultipleChoicesQuiz(
         question: kanas[0].katakana,
-        correctChoice: 0,
-        choices: [
-          kanas[0].hiragana,
+        correctChoice: kanas[0].hiragana,
+        wrongChoices: [
           kanas[1].hiragana,
           kanas[2].hiragana,
           kanas[3].hiragana,
@@ -78,21 +77,19 @@ class _QuizPageState extends State<QuizPage>
       ),
       MultipleChoicesQuiz(
         question: kanas[4].katakana,
-        correctChoice: 3,
-        choices: [
+        correctChoice: kanas[4].hiragana,
+        wrongChoices: [
           kanas[7].hiragana,
           kanas[6].hiragana,
           kanas[5].hiragana,
-          kanas[4].hiragana,
         ],
         onSubmit: _removeQuiz,
       ),
       MultipleChoicesQuiz(
         question: kanas[6].katakana,
-        correctChoice: 1,
-        choices: [
+        correctChoice: kanas[6].hiragana,
+        wrongChoices: [
           kanas[5].hiragana,
-          kanas[6].hiragana,
           kanas[4].hiragana,
           kanas[7].hiragana,
         ],
@@ -100,9 +97,8 @@ class _QuizPageState extends State<QuizPage>
       ),
       MultipleChoicesQuiz(
         question: kanas[7].katakana,
-        correctChoice: 0,
-        choices: [
-          kanas[7].hiragana,
+        correctChoice: kanas[7].hiragana,
+        wrongChoices: [
           kanas[8].hiragana,
           kanas[9].hiragana,
           kanas[10].hiragana,
