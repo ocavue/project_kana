@@ -1,3 +1,6 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 class Kana {
   String hiragana, katakana, romaji;
 
@@ -6,6 +9,18 @@ class Kana {
   @override
   String toString() {
     return 'Kana(romaji: $romaji)';
+  }
+
+  String get audioPath {
+    return 'kana_audios/${this.romaji}.mp3';
+  }
+
+  Future<int> playAudio() async {
+    print('playing');
+    final file = await AudioCache().load(audioPath);
+    final result = await AudioPlayer().play(file.path, isLocal: true);
+    print('result: $result');
+    return result;
   }
 }
 

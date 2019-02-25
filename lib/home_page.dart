@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'kana.dart';
 import 'quiz_page.dart';
 import 'settings_page.dart';
+import 'kana_dialog.dart';
 
 const gridSpacing = 1.0;
 
@@ -51,6 +52,8 @@ class _HomePageState extends State<HomePage> {
             ),
             onTap: () {
               print(kana);
+              final dialog = KanaDialog(kana);
+              dialog.show(context);
             },
           ),
         ),
