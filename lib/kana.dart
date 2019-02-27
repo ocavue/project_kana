@@ -6,6 +6,8 @@ class Kana {
   @override
   String toString() {
     return 'Kana(romaji: $romaji)';
+
+
   }
 }
 
