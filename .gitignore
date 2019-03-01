@@ -1,3 +1,8 @@
+# IDE will add some files into android/ and ios/. My CI build tasks and test
+# tasks work perfectly without those files. So I ignore them for now.
+android/
+ios/
+
 # Miscellaneous
 *.class
 *.lock
