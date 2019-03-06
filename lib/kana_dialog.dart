@@ -29,7 +29,6 @@ class KanaDialog extends StatelessWidget {
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 28,
-              fontWeight: FontWeight.bold,
             ),
           ),
           SizedBox(width: 16.0),
@@ -53,7 +52,7 @@ class KanaDialog extends StatelessWidget {
               SizedBox(height: 8),
               Text(
                 kana.hiragana,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
               )
             ]),
             Column(children: [
@@ -61,7 +60,7 @@ class KanaDialog extends StatelessWidget {
               SizedBox(height: 8),
               Text(
                 kana.katakana,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
               )
             ]),
           ],

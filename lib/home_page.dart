@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'kana.dart';
 import 'quiz_page.dart';
 import 'settings_page.dart';
-import 'kana_dialog.dart';
+import 'grid_tiles.dart';
 
 const gridSpacing = 1.0;
 
@@ -17,56 +17,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Widget> _getKanaTiles() {
+    final List<Widget> tiles = [];
+    for (final kana in kanas) tiles.add(KanaGridTile(gridSpacing, kana));
+    final emptyTile = EmptyGridTile(gridSpacing);
+    for (final index in [31, 33, 41, 42, 43]) tiles.insert(index, emptyTile);
+    return tiles;
+  }
+
   Widget _buildGridView() {
-    List<Widget> gridCells = [];
-
-    for (final kana in kanas) {
-      final cell = Container(
-        child: Ink(
-          decoration: new BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey[400],
-                blurRadius: 0.0,
-                spreadRadius: gridSpacing,
-              )
-            ],
-            color: Theme.of(context).scaffoldBackgroundColor,
-          ),
-          child: InkWell(
-            child: Column(
-              children: [
-                Text(
-                  kana.hiragana,
-                  style: TextStyle(fontSize: 24.0),
-                ),
-                Row(
-                  children: [
-                    Text(kana.katakana),
-                    Text(kana.romaji),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                )
-              ],
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-            ),
-            onTap: () {
-              print(kana);
-              final dialog = KanaDialog(kana);
-              dialog.show(context);
-            },
-          ),
-        ),
-      );
-      gridCells.add(cell);
-    }
-
     return GridView.count(
       primary: false,
       crossAxisSpacing: gridSpacing,
       mainAxisSpacing: gridSpacing,
       crossAxisCount: 5,
-      children: gridCells,
+      children: _getKanaTiles(),
       padding: EdgeInsets.only(bottom: 64), // Add padding for FAB
     );
   }
