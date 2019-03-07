@@ -63,50 +63,49 @@ class _QuizPageState extends State<QuizPage>
     return Offset(0.0, 0.0);
   }
 
-  _QuizPageState() {
-    quizs = [
-      MultipleChoicesQuiz(
-        question: kanas[0].katakana,
-        correctChoice: kanas[0].hiragana,
-        wrongChoices: [
-          kanas[1].hiragana,
-          kanas[2].hiragana,
-          kanas[3].hiragana,
-        ],
-        onSubmit: _removeQuiz,
-      ),
-      MultipleChoicesQuiz(
-        question: kanas[4].katakana,
-        correctChoice: kanas[4].hiragana,
-        wrongChoices: [
-          kanas[7].hiragana,
-          kanas[6].hiragana,
-          kanas[5].hiragana,
-        ],
-        onSubmit: _removeQuiz,
-      ),
-      MultipleChoicesQuiz(
-        question: kanas[6].katakana,
-        correctChoice: kanas[6].hiragana,
-        wrongChoices: [
-          kanas[5].hiragana,
-          kanas[4].hiragana,
-          kanas[7].hiragana,
-        ],
-        onSubmit: _removeQuiz,
-      ),
-      MultipleChoicesQuiz(
-        question: kanas[7].katakana,
-        correctChoice: kanas[7].hiragana,
-        wrongChoices: [
-          kanas[8].hiragana,
-          kanas[9].hiragana,
-          kanas[10].hiragana,
-        ],
-        onSubmit: _removeQuiz,
-      ),
-    ];
+  List<Quiz> getQuizs() {
+    final kanaPool = kanas..shuffle();
+    final choicedKanas = kanaPool.getRange(0, 10).toList();
+    final List<Quiz> quizs = [];
 
+    assert(choicedKanas.length >= 4);
+
+    for (final kana in choicedKanas) {
+      List<Kana> wrongKanas = List<Kana>.from(choicedKanas)
+        ..remove(kana)
+        ..shuffle()
+        ..getRange(0, 3).toList();
+      wrongKanas = wrongKanas.getRange(0, 3).toList();
+      assert(wrongKanas.length == 3);
+
+      assert(wrongKanas.length == 3, "${wrongKanas.length}");
+
+      final int randomType = Random().nextInt(2);
+      String getKanaAttr(Kana kana) {
+        if (randomType == 0) return kana.hiragana;
+        if (randomType == 1) return kana.katakana;
+        return kana.katakana;
+      }
+
+      final Quiz quiz = MultipleChoicesQuiz(
+        question: kana.romaji,
+        correctChoice: getKanaAttr(kana),
+        wrongChoices: [
+          getKanaAttr(wrongKanas[0]),
+          getKanaAttr(wrongKanas[1]),
+          getKanaAttr(wrongKanas[2]),
+        ],
+        onSubmit: _removeQuiz,
+      );
+
+      quizs.add(quiz);
+    }
+
+    return quizs;
+  }
+
+  _QuizPageState() {
+    quizs = getQuizs();
     quizLength = quizs.length;
   }
 
