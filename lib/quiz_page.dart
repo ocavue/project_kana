@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'kana.dart';
 import 'quiz.dart';
+import 'storage.dart';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -71,6 +72,8 @@ class _QuizPageState extends State<QuizPage>
     assert(choicedKanas.length >= 4);
 
     for (final kana in choicedKanas) {
+      final index = choicedKanas.indexOf(kana);
+
       List<Kana> wrongKanas = List<Kana>.from(choicedKanas)
         ..remove(kana)
         ..shuffle()
@@ -95,7 +98,22 @@ class _QuizPageState extends State<QuizPage>
           getKanaAttr(wrongKanas[1]),
           getKanaAttr(wrongKanas[2]),
         ],
-        onSubmit: _removeQuiz,
+        onSubmit: (String selectedChoice) {
+          setState(() {
+            if (selectedChoice == getKanaAttr(kana)) {
+              kana.score += 0.1;
+            } else {
+              kana.score = kana.score * 0.8;
+              for (final wrongKana in wrongKanas) {
+                if (getKanaAttr(wrongKana) == selectedChoice) {
+                  wrongKana.score = wrongKana.score * 0.9;
+                }
+              }
+            }
+          });
+          if (index - 1 == choicedKanas.length) kanaScoresStorage.saveSorces();
+          _removeQuiz();
+        },
       );
 
       quizs.add(quiz);

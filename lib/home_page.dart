@@ -4,6 +4,7 @@ import 'kana.dart';
 import 'quiz_page.dart';
 import 'settings_page.dart';
 import 'grid_tiles.dart';
+import 'storage.dart';
 
 const gridSpacing = 1.0;
 
@@ -34,6 +35,12 @@ class _HomePageState extends State<HomePage> {
       children: _getKanaTiles(),
       padding: EdgeInsets.only(bottom: 64), // Add padding for FAB
     );
+  }
+
+  @override
+  initState() {
+    super.initState();
+    kanaScoresStorage.loadSorces().then((value) => setState(() {}));
   }
 
   @override
