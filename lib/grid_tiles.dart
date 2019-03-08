@@ -50,6 +50,13 @@ class KanaGridTile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  Text(kana.hiragana, style: TextStyle(fontSize: 24.0)),
+                  Text(kana.katakana, style: TextStyle(fontSize: 24.0)),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   Text(
                     kana.romaji,
                     style: TextStyle(
@@ -57,13 +64,7 @@ class KanaGridTile extends StatelessWidget {
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(kana.hiragana, style: TextStyle(fontSize: 24.0)),
-                  Text(kana.katakana, style: TextStyle(fontSize: 24.0)),
+                  Text((kana.score * 10).toStringAsFixed(0)),
                 ],
               ),
             ],

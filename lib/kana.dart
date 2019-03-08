@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 class Kana {
   String hiragana, katakana, romaji;
+  double _score;
 
   Kana(this.hiragana, this.katakana, this.romaji);
 
@@ -21,6 +22,17 @@ class Kana {
     final result = await AudioPlayer().play(file.path, isLocal: true);
     print('result: $result');
     return result;
+  }
+
+  double get score {
+    if (_score == null) return 0.0;
+    return _score;
+  }
+
+  set score(double value) {
+    if (value >= 1.0) value = 1.0;
+    if (value <= 0.0) value = 0.0;
+    _score = value;
   }
 }
 

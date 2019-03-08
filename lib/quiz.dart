@@ -51,7 +51,7 @@ class MultipleChoicesQuiz extends Quiz {
   final String question;
   final String correctChoice;
   final List<String> wrongChoices;
-  final VoidCallback onSubmit;
+  final Function(String) onSubmit;
 
   MultipleChoicesQuiz({
     Key key,
@@ -91,7 +91,7 @@ class MultipleChoicesQuizState extends State<MultipleChoicesQuiz> {
             print(
               'select $choice, ${isCorrect ? 'correct' : 'incorrect'}',
             );
-            widget.onSubmit();
+            widget.onSubmit(selectedChoice);
           });
         },
       ),
