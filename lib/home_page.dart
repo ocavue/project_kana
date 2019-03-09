@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'kana.dart';
 import 'quiz_page.dart';
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
             tooltip: 'Setting',
             onPressed: () {
               Navigator.of(context).push(
-                new MaterialPageRoute<void>(
+                new CupertinoPageRoute<void>(
                   builder: (BuildContext context) => SettingsPage(),
                 ),
               );
@@ -70,6 +71,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.of(context).push(
             new MaterialPageRoute<void>(
               builder: (BuildContext context) => QuizPage(),
+              fullscreenDialog: true,
             ),
           );
         },
