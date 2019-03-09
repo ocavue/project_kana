@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'kana.dart';
-import 'quiz.dart';
+import 'quiz_cards.dart';
 import 'storage.dart';
 
 class QuizPage extends StatefulWidget {
@@ -14,7 +14,7 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage>
     with SingleTickerProviderStateMixin {
   int quizLength;
-  List<Quiz> quizs = [];
+  List<QuizCard> quizs = [];
   Map<Kana, double> scoresSnapshot = {};
   Widget result = Container();
 
@@ -60,7 +60,7 @@ class _QuizPageState extends State<QuizPage>
     });
   }
 
-  Offset _getOffset(Quiz quiz) {
+  Offset _getOffset(QuizCard quiz) {
     if (quizs.indexOf(quiz) == 0) {
       return Offset(-1 * screenWidth * animation.value, 0.0);
     }
@@ -93,7 +93,7 @@ class _QuizPageState extends State<QuizPage>
         return kana.katakana;
       }
 
-      final Quiz quiz = MultipleChoicesQuiz(
+      final QuizCard quiz = MultipleChoicesQuiz(
         question: kana.romaji,
         correctChoice: getKanaAttr(kana),
         wrongChoices: [
@@ -150,7 +150,7 @@ class _QuizPageState extends State<QuizPage>
 
     final List<Widget> stack = [];
     stack.addAll(quizs.reversed.map(
-      (Quiz quiz) {
+      (QuizCard quiz) {
         return Transform.translate(
           offset: _getOffset(quiz),
           child: quizs.indexOf(quiz) <= 1 ? quiz : Container(),
