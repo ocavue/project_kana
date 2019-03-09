@@ -14,7 +14,9 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage>
     with SingleTickerProviderStateMixin {
   int quizLength;
-  List<Quiz> quizs;
+  List<Quiz> quizs = [];
+  Map<Kana, double> scoresSnapshot = {};
+  Widget result = Container();
 
   AnimationController controller;
   Animation<double> animation;
@@ -46,13 +48,14 @@ class _QuizPageState extends State<QuizPage>
     });
   }
 
-  void _removeQuiz() {
+  void _removeQuiz(VoidCallback delayedCallback) {
     // Wait for a while, so that user can ee if the answer is correct
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       // Tell the animation to start
       controller.forward().whenComplete(() {
         controller.reset();
         quizs.removeAt(0);
+        delayedCallback();
       });
     });
   }
@@ -64,10 +67,10 @@ class _QuizPageState extends State<QuizPage>
     return Offset(0.0, 0.0);
   }
 
-  List<Quiz> getQuizs() {
+  _QuizPageState() {
     final kanaPool = kanas..shuffle();
-    final choicedKanas = kanaPool.getRange(0, 10).toList();
-    final List<Quiz> quizs = [];
+    final choicedKanas = kanaPool.getRange(0, 4).toList();
+    for (final kana in choicedKanas) scoresSnapshot[kana] = kana.score;
 
     assert(choicedKanas.length >= 4);
 
@@ -104,32 +107,57 @@ class _QuizPageState extends State<QuizPage>
               kana.score += 0.1;
             } else {
               kana.score = kana.score * 0.8;
-              for (final wrongKana in wrongKanas) {
-                if (getKanaAttr(wrongKana) == selectedChoice) {
-                  wrongKana.score = wrongKana.score * 0.9;
-                }
-              }
             }
           });
-          if (index - 1 == choicedKanas.length) kanaScoresStorage.saveSorces();
-          _removeQuiz();
+          _removeQuiz(() {
+            if (index + 1 == choicedKanas.length) {
+              List<Widget> listTiles = [];
+              for (final kana in choicedKanas) {
+                listTiles.add(ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('${kana.romaji}'),
+                      Text(
+                        '${(scoresSnapshot[kana] * 10).toStringAsFixed(0)} => ${(kana.score * 10).toStringAsFixed(0)}',
+                      ),
+                    ],
+                  ),
+                ));
+              }
+              result = Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  ListView(children: listTiles, shrinkWrap: true),
+                  RaisedButton(child: Text('OK'), onPressed: () {}),
+                ],
+              );
+            }
+          });
+          kanaScoresStorage.saveSorces();
         },
       );
 
       quizs.add(quiz);
     }
 
-    return quizs;
-  }
-
-  _QuizPageState() {
-    quizs = getQuizs();
     quizLength = quizs.length;
   }
 
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
+
+    final List<Widget> stack = [];
+    stack.addAll(quizs.reversed.map(
+      (Quiz quiz) {
+        return Transform.translate(
+          offset: _getOffset(quiz),
+          child: quizs.indexOf(quiz) <= 1 ? quiz : Container(),
+        );
+      },
+    ));
+    stack.add(result);
 
     return Scaffold(
       appBar: AppBar(
@@ -146,14 +174,7 @@ class _QuizPageState extends State<QuizPage>
             ),
             Expanded(
               child: Stack(
-                children: quizs.reversed.map(
-                  (Quiz quiz) {
-                    return Transform.translate(
-                      offset: _getOffset(quiz),
-                      child: quizs.indexOf(quiz) <= 1 ? quiz : Container(),
-                    );
-                  },
-                ).toList(),
+                children: stack,
               ),
             )
           ],
