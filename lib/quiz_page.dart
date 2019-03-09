@@ -147,10 +147,10 @@ class _QuizPageState extends State<QuizPage>
             Expanded(
               child: Stack(
                 children: quizs.reversed.map(
-                  (quiz) {
+                  (Quiz quiz) {
                     return Transform.translate(
                       offset: _getOffset(quiz),
-                      child: quiz,
+                      child: quizs.indexOf(quiz) <= 1 ? quiz : Container(),
                     );
                   },
                 ).toList(),

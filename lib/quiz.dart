@@ -85,7 +85,7 @@ class MultipleChoicesQuizState extends State<MultipleChoicesQuiz> {
         selectedColor: selectedColor,
         selected: selectedChoice == choice,
         onSelected: () {
-          if (selectedChoice != null) return;
+          if (selectedChoice != null && selectedChoice != choice) return;
           setState(() {
             selectedChoice = choice;
             print(
