@@ -125,13 +125,12 @@ class _QuizPageState extends State<QuizPage>
                   ),
                 ));
               }
-              result = Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ListView(children: listTiles, shrinkWrap: true),
-                  RaisedButton(child: Text('OK'), onPressed: () {}),
-                ],
-              );
+              listTiles.addAll([
+                SizedBox(height: 16),
+                RaisedButton(child: Text('OK'), onPressed: () {}),
+                SizedBox(height: 32),
+              ]);
+              result = ListView(children: listTiles);
             }
           });
           kanaScoresStorage.saveSorces();
@@ -153,7 +152,9 @@ class _QuizPageState extends State<QuizPage>
       (QuizCard quiz) {
         return Transform.translate(
           offset: _getOffset(quiz),
-          child: quizs.indexOf(quiz) <= 1 ? quiz : Container(),
+          child: quizs.indexOf(quiz) <= 1
+              ? Padding(padding: EdgeInsets.only(bottom: 24), child: quiz)
+              : Container(),
         );
       },
     ));
@@ -164,7 +165,7 @@ class _QuizPageState extends State<QuizPage>
         title: Text('Quiz'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         child: Column(
           children: [
             Container(
