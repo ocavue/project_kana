@@ -49,8 +49,8 @@ class _QuizPageState extends State<QuizPage>
   }
 
   void _removeQuiz(VoidCallback delayedCallback) {
-    // Wait for a while, so that user can ee if the answer is correct
-    Future.delayed(const Duration(milliseconds: 100), () {
+    // Wait for a while, so that users can see if their answer is correct
+    Future.delayed(const Duration(milliseconds: 650), () {
       // Tell the animation to start
       controller.forward().whenComplete(() {
         controller.reset();
@@ -69,7 +69,7 @@ class _QuizPageState extends State<QuizPage>
 
   _QuizPageState() {
     final kanaPool = List<Kana>.from(kanas)..shuffle();
-    final choicedKanas = kanaPool.getRange(0, 4).toList();
+    final choicedKanas = kanaPool.getRange(0, 10).toList();
     for (final kana in choicedKanas) scoresSnapshot[kana] = kana.score;
 
     assert(choicedKanas.length >= 4);
