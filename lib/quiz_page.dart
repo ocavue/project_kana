@@ -127,7 +127,10 @@ class _QuizPageState extends State<QuizPage>
               }
               listTiles.addAll([
                 SizedBox(height: 16),
-                RaisedButton(child: Text('OK'), onPressed: () {}),
+                RaisedButton(
+                  child: Text('OK'),
+                  onPressed: () => Navigator.pop(context),
+                ),
                 SizedBox(height: 32),
               ]);
               result = ListView(children: listTiles);
