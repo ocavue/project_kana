@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:package_info/package_info.dart';
 
 import 'kana.dart';
 import 'quiz_page.dart';
@@ -55,10 +54,9 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.settings),
             tooltip: 'Setting',
             onPressed: () async {
-              PackageInfo packageInfo = await PackageInfo.fromPlatform();
               Navigator.of(context).push(
                 new CupertinoPageRoute<void>(
-                  builder: (BuildContext context) => SettingsPage(packageInfo),
+                  builder: (BuildContext context) => SettingsPage(),
                 ),
               );
             },

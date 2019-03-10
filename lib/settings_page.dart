@@ -46,17 +46,26 @@ launchUrl(
 }
 
 class SettingsPage extends StatelessWidget {
-  final PackageInfo packageInfo;
-
-  SettingsPage(this.packageInfo) : super();
-
   @override
   Widget build(BuildContext context) {
+    final Future<PackageInfo> packageInfoFuture = PackageInfo.fromPlatform();
+
     final List<Widget> items = [
-      SettingTile(
-        'Check for update',
-        '${packageInfo.version} +${packageInfo.buildNumber}',
-        () => launchUrl('url', 'Language', 'Work in process', context),
+      FutureBuilder<PackageInfo>(
+        future: packageInfoFuture,
+        builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+          String version = '';
+          if (snapshot.connectionState == ConnectionState.done &&
+              !snapshot.hasError) {
+            PackageInfo packageInfo = snapshot.data;
+            version = '${packageInfo.version} +${packageInfo.buildNumber}';
+          }
+          return SettingTile(
+            'Check for update',
+            version,
+            () => launchUrl('url', 'Language', 'Work in process', context),
+          );
+        },
       ),
       SettingTile(
         'Language',
