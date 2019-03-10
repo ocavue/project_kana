@@ -68,7 +68,7 @@ class _QuizPageState extends State<QuizPage>
   }
 
   _QuizPageState() {
-    final kanaPool = kanas..shuffle();
+    final kanaPool = List<Kana>.from(kanas)..shuffle();
     final choicedKanas = kanaPool.getRange(0, 4).toList();
     for (final kana in choicedKanas) scoresSnapshot[kana] = kana.score;
 
