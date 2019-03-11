@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.settings),
             tooltip: 'Setting',
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).push(
                 new CupertinoPageRoute<void>(
                   builder: (BuildContext context) => SettingsPage(),

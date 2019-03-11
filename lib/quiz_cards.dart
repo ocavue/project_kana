@@ -43,11 +43,11 @@ class MyChipState extends State<MyChip> {
   }
 }
 
-abstract class Quiz extends StatefulWidget {
-  Quiz({Key key}) : super(key: key);
+abstract class QuizCard extends StatefulWidget {
+  QuizCard({Key key}) : super(key: key);
 }
 
-class MultipleChoicesQuiz extends Quiz {
+class MultipleChoicesQuiz extends QuizCard {
   final String question;
   final String correctChoice;
   final List<String> wrongChoices;

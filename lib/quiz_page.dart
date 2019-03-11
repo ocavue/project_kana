@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'kana.dart';
-import 'quiz.dart';
+import 'quiz_cards.dart';
 import 'storage.dart';
 
 class QuizPage extends StatefulWidget {
@@ -14,7 +14,7 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage>
     with SingleTickerProviderStateMixin {
   int quizLength;
-  List<Quiz> quizs = [];
+  List<QuizCard> quizs = [];
   Map<Kana, double> scoresSnapshot = {};
   Widget result = Container();
 
@@ -49,8 +49,8 @@ class _QuizPageState extends State<QuizPage>
   }
 
   void _removeQuiz(VoidCallback delayedCallback) {
-    // Wait for a while, so that user can ee if the answer is correct
-    Future.delayed(const Duration(milliseconds: 100), () {
+    // Wait for a while, so that users can see if their answer is correct
+    Future.delayed(const Duration(milliseconds: 650), () {
       // Tell the animation to start
       controller.forward().whenComplete(() {
         controller.reset();
@@ -60,7 +60,7 @@ class _QuizPageState extends State<QuizPage>
     });
   }
 
-  Offset _getOffset(Quiz quiz) {
+  Offset _getOffset(QuizCard quiz) {
     if (quizs.indexOf(quiz) == 0) {
       return Offset(-1 * screenWidth * animation.value, 0.0);
     }
@@ -68,8 +68,8 @@ class _QuizPageState extends State<QuizPage>
   }
 
   _QuizPageState() {
-    final kanaPool = kanas..shuffle();
-    final choicedKanas = kanaPool.getRange(0, 4).toList();
+    final kanaPool = List<Kana>.from(kanas)..shuffle();
+    final choicedKanas = kanaPool.getRange(0, 10).toList();
     for (final kana in choicedKanas) scoresSnapshot[kana] = kana.score;
 
     assert(choicedKanas.length >= 4);
@@ -93,7 +93,7 @@ class _QuizPageState extends State<QuizPage>
         return kana.katakana;
       }
 
-      final Quiz quiz = MultipleChoicesQuiz(
+      final QuizCard quiz = MultipleChoicesQuiz(
         question: kana.romaji,
         correctChoice: getKanaAttr(kana),
         wrongChoices: [
@@ -125,13 +125,15 @@ class _QuizPageState extends State<QuizPage>
                   ),
                 ));
               }
-              result = Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ListView(children: listTiles, shrinkWrap: true),
-                  RaisedButton(child: Text('OK'), onPressed: () {}),
-                ],
-              );
+              listTiles.addAll([
+                SizedBox(height: 16),
+                RaisedButton(
+                  child: Text('OK'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                SizedBox(height: 32),
+              ]);
+              result = ListView(children: listTiles);
             }
           });
           kanaScoresStorage.saveSorces();
@@ -150,10 +152,12 @@ class _QuizPageState extends State<QuizPage>
 
     final List<Widget> stack = [];
     stack.addAll(quizs.reversed.map(
-      (Quiz quiz) {
+      (QuizCard quiz) {
         return Transform.translate(
           offset: _getOffset(quiz),
-          child: quizs.indexOf(quiz) <= 1 ? quiz : Container(),
+          child: quizs.indexOf(quiz) <= 1
+              ? Padding(padding: EdgeInsets.only(bottom: 24), child: quiz)
+              : Container(),
         );
       },
     ));
@@ -164,7 +168,7 @@ class _QuizPageState extends State<QuizPage>
         title: Text('Quiz'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         child: Column(
           children: [
             Container(
