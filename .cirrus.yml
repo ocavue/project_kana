@@ -1,19 +1,19 @@
-test_task:
-  container:
-    image: cirrusci/flutter:latest
-  pub_cache:
-    folder: ~/.pub-cache
-  script:
-    - flutter doctor
-    - flutter analyze
-    - flutter test
+# test_task:
+#   container:
+#     image: cirrusci/flutter:latest
+#   pub_cache:
+#     folder: ~/.pub-cache
+#   script:
+#     - flutter doctor
+#     - flutter analyze
+#     - flutter test
 
-check_style_task:
-  container:
-    image: cirrusci/flutter:latest
-  script:
-    - flutter doctor
-    - flutter format --set-exit-if-changed --dry-run .
+# check_style_task:
+#   container:
+#     image: cirrusci/flutter:latest
+#   script:
+#     - flutter doctor
+#     - flutter format --set-exit-if-changed --dry-run .
 
 build_apk_task:
   container:
@@ -27,15 +27,15 @@ build_apk_task:
     - echo $filename
     - filepath='./build/app/outputs/apk/release/app-release.apk'
     - ls -lrth $filepath
-    - curl --upload-file $filepath https://transfer.sh/$filename
+    # - curl --upload-file $filepath https://transfer.sh/$filename
 
-build_ios_task:
-  osx_instance:
-    image: mojave-xcode-10.1
-  pub_cache:
-    folder: ~/.pub-cache
-  script:
-    - git clone https://github.com/flutter/flutter.git /tmp/flutter
-    - export PATH=/tmp/flutter/bin:$PATH && which flutter
-    - flutter doctor
-    - flutter -v build ios --no-codesign
+# build_ios_task:
+#   osx_instance:
+#     image: mojave-xcode-10.1
+#   pub_cache:
+#     folder: ~/.pub-cache
+#   script:
+#     - git clone https://github.com/flutter/flutter.git /tmp/flutter
+#     - export PATH=/tmp/flutter/bin:$PATH && which flutter
+#     - flutter doctor
+#     - flutter -v build ios --no-codesign
