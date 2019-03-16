@@ -27,7 +27,7 @@ build_apk_task:
     - echo $filename
     - filepath='./build/app/outputs/apk/release/app-release.apk'
     - ls -lrth $filepath
-    - curl --upload-file $filepath https://transfer.sh/$filename
+    # - curl --upload-file $filepath https://transfer.sh/$filename
 
 build_ios_task:
   osx_instance:
